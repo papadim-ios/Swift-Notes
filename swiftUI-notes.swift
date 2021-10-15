@@ -77,3 +77,112 @@ class User: ObservableObject {
 
 // MARK: - Archiving Swift objects with Codable
 // https://www.hackingwithswift.com/books/ios-swiftui/archiving-swift-objects-with-codable
+
+// ================================
+
+// MARK: - Resizing images to fit the screen using GeometryReader
+// https://www.hackingwithswift.com/books/ios-swiftui/resizing-images-to-fit-the-screen-using-geometryreader
+
+struct ContentView: View {
+    var body: some View {
+        VStack {
+            Image("Example")
+                .frame(width: 300, height: 300)
+                .clipped()
+        }
+    }
+}
+
+Image("Example")
+    .resizable()
+    .aspectRatio(contentMode: .fit)
+    .aspectRatio(contentMode: .fill)
+    .frame(width: 300, height: 300)
+    .clipped()
+
+// MARK: - How ScrollView lets us work with scrolling data
+// https://www.hackingwithswift.com/books/ios-swiftui/how-scrollview-lets-us-work-with-scrolling-data
+
+ScrollView(.vertical) {
+    VStack(spacing: 10) {
+        ForEach(0..<100) {
+            Text("Item \($0)")
+                .font(.title)
+        }
+    }
+    .frame(maxWidth: .infinity)
+}
+
+ScrollView(.vertical) {
+    VStack(spacing: 10) {
+        ForEach(0..<100) {
+            CustomText("Item \($0)")
+                .font(.title)
+        }
+    }
+    .frame(maxWidth: .infinity)
+}
+
+// The result will look identical, but now when you run the app you’ll see “Creating a new CustomText” 
+// printed a hundred times in Xcode’s log – SwiftUI won’t wait until you scroll down to see them, 
+// it will just create them immediately.
+
+List {
+    ForEach(0..<100) {
+        CustomText("Item \($0)")
+            .font(.title)
+    }
+}
+
+// When that code runs you’ll see it acts lazily: it creates instances of CustomText only when really needed!
+
+// MARK: - Pushing new views onto the stack using NavigationLink
+// https://www.hackingwithswift.com/books/ios-swiftui/pushing-new-views-onto-the-stack-using-navigationlink
+
+struct ContentView: View {
+    var body: some View {
+        NavigationView {
+            VStack {
+                Text("Hello World")
+            }
+            .navigationBarTitle("SwiftUI")
+        }
+    }
+}
+
+// We can use NavigationLink with any kind of destination view. 
+// Yes, we can design a custom view to push to, but we can also push straight to some text.
+
+NavigationView {
+    VStack {
+        NavigationLink(destination: Text("Detail View")) {
+            Text("Hello World")
+        }
+    }
+    .navigationBarTitle("SwiftUI")
+}
+
+// So, both sheet() and NavigationLink allow us to show a new view from the current one, 
+// but the way they do it is different and you should choose them carefully:
+
+// - NavigationLink is for showing details about the user’s selection, like you’re digging deeper into a topic.
+// - sheet() is for showing unrelated content, such as settings or a compose window.
+
+// The most common place you see NavigationLink is with a list, and there SwiftUI does something quite marvelous.
+
+NavigationView {
+    List(0..<100) { row in
+        NavigationLink(destination: Text("Detail \(row)")) {
+            Text("Row \(row)")
+        }
+    }
+    .navigationBarTitle("SwiftUI")
+}
+
+// Now you’ll see 100 list rows that can be tapped to show a detail view, but you’ll also see gray disclosure indicators on the right edge. 
+// This is the standard iOS way of telling users another screen is going to slide in from the right when the row is tapped, 
+// and SwiftUI is smart enough to add it automatically here. If those rows weren’t navigation links,
+// if you comment out the NavigationLink line and its closing brace – you’ll see the indicators disappear.
+
+// MARK: - Working with hierarchical Codable data
+// https://www.hackingwithswift.com/books/ios-swiftui/working-with-hierarchical-codable-data
